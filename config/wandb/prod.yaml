@@ -1,0 +1,12 @@
+# Allowed values for mode: online, offline, disabled
+mode: "online"
+slack: True
+
+experiment_project: mt_augmentation
+run_project: mt_augmentation_runs
+entity: 'weissman'
+
+environment: "prod"
+
+tags:
+  - Test

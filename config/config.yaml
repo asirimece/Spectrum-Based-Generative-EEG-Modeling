@@ -1,0 +1,13 @@
+defaults:
+  - augment: augment
+  - dataset: airplane_ccwgan
+  - experiment: gen
+  - gen: gen
+  - hook: hook
+  - model: eeg_net
+  - pipeline: gen
+  - tracker: tracker
+  - wandb: dev
+  - _self_
+
+seed: 1

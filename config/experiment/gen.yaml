@@ -1,0 +1,37 @@
+
+name: 'AIRPLANE_128_STFT_GEN_CCWGAN'
+
+dataset: ${dataset}
+pipeline: ${pipeline}
+
+type: 'gen_training_evaluation'
+
+mode: 'intra_subject'
+
+sub_mode: ${dataset.experiment_sub_mode}
+
+storage_path: './work_dirs'
+
+subjects: ${dataset.benchmark_subjects}
+sessions: [0]
+
+load_balanced: False
+cv_folds: 5
+ensemble_size: null
+
+tuning_augmentation: null
+augmentations: []
+
+evaluators:
+  - name: 'model_tuning_best_param_evaluator'
+    metric: 'target_dtw_mean'
+    subsets: ['train']
+
+visualizers:
+  - name: 'best_run_visualizer'
+    metric: 'target_dtw_mean'
+    subsets: ['train']
+  - name: 'hyperparameter_visualizer'
+    parameter: 'generator__optim__lr'
+    metric: 'target_dtw_mean'
+    subsets: ['train', 'test']

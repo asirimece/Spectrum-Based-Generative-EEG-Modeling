@@ -1,0 +1,55 @@
+name: 'svm'
+pipeline_type: 'traditional'
+
+args: []
+kwargs:
+  kernel: 'rbf'
+  C: 110
+  gamma: 0.0003
+  probability: True
+
+steps:
+  - name: 'scaler'
+    args: []
+    kwargs: {}
+    dynamic_args: ['info']
+  - name: 'epoch_splitter'
+    args: []
+    kwargs:
+      window_size_ms: ${dataset.window_size_ms}
+      sfreq: ${dataset.sfreq}
+      extractor:
+        name: 'pca'
+        scaling: 'standard_scaler'
+        kwargs:
+          n_components: 30
+          whiten: true
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+
+tuning:
+  enabled: False
+  scope: 'generator'
+#  scope: 'pipeline'
+#  strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters:
+    - name: 'svc__kernel'
+      strategy: 'choice'
+      value_list: ['rbf', 'poly']
+    - name: 'svc__C'
+      strategy: 'logspace'
+      size: 20
+      start: -2
+      end: 10
+      d_type: 'float'
+    - name: 'svc__gamma'
+      strategy: 'logspace'
+      size: 20
+      start: -9
+      end: 3
+      d_type: 'float'

@@ -1,0 +1,37 @@
+
+
+name: 'smooth_time_mask'
+
+kwargs:
+  probability: 0.5
+  mask_len_samples: 20
+  transform_type: 'additive'
+  shuffle: False
+  random_state: ${seed}
+  classes: null
+
+optimization_parameter: 'mask_len_samples'
+op_neutral_value: 0
+
+search:
+  strategy: 'range'
+  start: ${augmentation.smooth_time_mask.op_neutral_value}
+  end: 50
+  step: 5
+  d_type: 'int'
+
+visualisation_config:
+  name: 'Smooth Time Mask'
+  label: 'Mask length in timesteps (samples)'
+  metric: 'balanced_accuracy'
+  metric_label: 'Balanced Accuracy'
+  kwargs:
+    plot_type: 'boxplot'
+    color: 'navy'
+    boxplot_color: 'lavender'
+    percentage: True
+    subject_display: True
+    relative_to_baseline: True
+    baseline_parameter_value: ${augmentation.smooth_time_mask.op_neutral_value}
+    parameter_rounding: 0
+    metric_rounding: 4

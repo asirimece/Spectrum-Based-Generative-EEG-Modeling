@@ -1,0 +1,42 @@
+name: 'lda'
+pipeline_type: 'traditional'
+
+args: []
+kwargs:
+  solver: 'eigen'
+  shrinkage: 'auto'
+
+steps:
+  - name: 'custom_scaler'
+    args: [ ]
+    kwargs:
+      scalings: 'minmax'
+      feature_range: ${as_tuple:[-1, 1]}
+  - name: 'epoch_splitter'
+    args: []
+    kwargs:
+      # window_size_ms: 880
+      window_size_ms: ${dataset.window_size_ms}
+      sfreq: ${dataset.sfreq}
+      extractor:
+        name: 'pca'
+        scaling: 'standard_scaler'
+        kwargs:
+          n_components: 30
+          whiten: true
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+tuning:
+  enabled: False
+  scope: 'generator'
+#  scope: 'pipeline'
+#  strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters:
+    - name: 'lineardiscriminantanalysis__solver'
+      strategy: 'choice'
+      value_list: ['svd', 'lsqr', 'eigen']

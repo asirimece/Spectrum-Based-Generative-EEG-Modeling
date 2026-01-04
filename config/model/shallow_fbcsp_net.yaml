@@ -1,0 +1,64 @@
+name: 'shallow_fbcsp_net'
+pipeline_type: 'neural'
+
+args: []
+kwargs:
+  max_epochs: 30
+  batch_size: 32
+  experiment_mode: ${experiment.mode}
+  random_state: ${seed}
+  n_filters_time: 50
+  n_filters_spat: 90
+  optimizer: 'adamW'
+  lr: 0.0001833
+  weight_decay: 0.0007848
+  conv_nonlin: 'square'
+  valid_split: 0.2
+  callbacks:
+    - name: 'balanced_accuracy'
+      kwargs: {}
+
+steps:
+  - name: 'scaler'
+    args: []
+    kwargs: {}
+    dynamic_args: ['info']
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+tuning:
+  enabled: False
+  scope: 'generator'
+#  strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters:
+    - name: 'eegclassifier__optimizer__lr'
+      strategy: 'logspace'
+      size: 20
+      start: -5
+      end: -1
+      d_type: 'float'
+    - name: 'eegclassifier__optimizer__weight_decay'
+      strategy: 'logspace'
+      size: 20
+      start: -5
+      end: -1
+      d_type: 'float'
+    - name: 'eegclassifier__batch_size'
+      strategy: 'choice'
+      value_list: [32, 64]
+    - name: 'eegclassifier__module__n_filters_time'
+      strategy: 'range'
+      start: 10
+      end: 100
+      step: 10
+      d_type: 'int'
+    - name: 'eegclassifier__module__n_filters_spat'
+      strategy: 'range'
+      start: 10
+      end: 100
+      step: 10
+      d_type: 'int'

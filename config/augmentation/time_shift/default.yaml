@@ -1,0 +1,58 @@
+
+
+name: 'time_shift'
+
+raw_t_min: ${eval:'${dataset.t_min} - ${augmentation.time_shift.kwargs.max_delta_time}'}
+raw_t_max: ${eval:'${dataset.t_max} + ${augmentation.time_shift.kwargs.max_delta_time}'}
+
+kwargs:
+  probability: 0.5
+  max_delta_time: 0.3
+  target_t_min: ${dataset.t_min}
+  target_t_max: ${dataset.t_max}
+  is_t_min: ${augmentation.time_shift.raw_t_min}
+  is_t_max: ${augmentation.time_shift.raw_t_max}
+  n_times: ${dataset.n_times}
+  sfreq: ${dataset.sfreq}
+  transform_type: 'additive'
+  shuffle: False
+  random_state: ${seed}
+  classes: null
+
+epochs_preprocessors:
+  - name: 'time_crop'
+    args: []
+    kwargs:
+      transform_step: 'post_augment'
+      in_t_min: ${dataset.raw_t_min}
+      in_t_max: ${dataset.raw_t_max}
+      out_t_min: ${dataset.t_min}
+      out_t_max: ${dataset.t_max}
+      n_times: ${dataset.n_times}
+      sfreq: ${dataset.sfreq}
+
+optimization_parameter: 'max_delta_time'
+op_neutral_value: 0
+
+search:
+  strategy: 'range'
+  start: ${augmentation.time_shift.op_neutral_value}
+  end: 0.3
+  step: 0.03
+  d_type: 'float'
+
+visualisation_config:
+  name: 'Time Shift'
+  label: 'Max Delta Time (s)'
+  metric: 'balanced_accuracy'
+  metric_label: 'Balanced Accuracy'
+  kwargs:
+    plot_type: 'boxplot'
+    color: 'seagreen'
+    boxplot_color: 'beige'
+    percentage: True
+    subject_display: True
+    relative_to_baseline: True
+    baseline_parameter_value: ${augmentation.frequency_shift.op_neutral_value}
+    parameter_rounding: 2
+    metric_rounding: 4

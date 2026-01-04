@@ -1,0 +1,8 @@
+
+defaults:
+  - smooth_time_mask: default
+  - channels_dropout: default
+  - ft_surrogate: default
+  - frequency_shift: default
+  - time_shift: default
+  - gen: gan

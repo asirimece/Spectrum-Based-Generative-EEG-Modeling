@@ -1,0 +1,38 @@
+
+
+name: 'frequency_shift'
+
+kwargs:
+  probability: 0.5
+  sfreq: ${dataset.sfreq}
+  max_delta_freq: 2
+  transform_type: 'additive'
+  shuffle: False
+  random_state: ${seed}
+  classes: null
+
+optimization_parameter: 'max_delta_freq'
+op_neutral_value: 0
+
+search:
+  strategy: 'range'
+  start: ${augmentation.frequency_shift.op_neutral_value}
+  end: 4
+  step: 0.4
+  d_type: 'float'
+
+visualisation_config:
+  name: 'Frequency Shift'
+  label: 'Maximum Frequency Shift (Hz)'
+  metric: 'balanced_accuracy'
+  metric_label: 'Balanced Accuracy'
+  kwargs:
+    plot_type: 'boxplot'
+    color: 'darkorange'
+    boxplot_color: 'bisque'
+    percentage: True
+    subject_display: True
+    relative_to_baseline: True
+    baseline_parameter_value: ${augmentation.frequency_shift.op_neutral_value}
+    parameter_rounding: 1
+    metric_rounding: 4

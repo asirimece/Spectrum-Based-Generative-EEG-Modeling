@@ -1,0 +1,60 @@
+
+type: 'gen'
+
+raw_preprocessors: ${dataset.raw_preprocessors}
+
+trainer: ${gen.trainer}
+model: ${gen.model}
+
+augmentations: ${augment}
+
+steps:
+  - name: 'spectrogram_computer'
+    args: []
+    kwargs:
+      sfreq: 128
+      params:
+        enabled: true
+        #window_size: 0.25
+        window_size: 0.50
+        overlap: 0.75
+        n_fft: 256
+        fmin: 1
+        fmax: 40
+  - name: 'spectrogram_augmenter'
+    args: []
+    kwargs:
+      config: ${augment}
+  - name: 'spectrogram_stacker'
+    args: []
+    kwargs: 
+      labels: 'labels'
+
+evaluators:
+  - 'gen_time_signal_reconstruction'
+  - 'gen_statistics'
+  - 'gen_dtw'
+  - name: 'synthetic_vs_real_metrics'
+    model_path: ${dataset.verification_model}
+    raw_preprocessors: ${dataset.raw_preprocessors}
+
+visualizers:
+  - 'gen_real'
+  - 'gen_synthetic'
+  - 'gen_p300'
+  - 'gen_evoked_electrodes_target'
+  - 'gen_evoked_electrodes_distractor'
+  - 'gen_topomap'
+  - 'gen_joint_evoked'
+  - 'gen_psd'
+  - 'gen_psd_topomap'
+  - 'gen_statistical'
+  - 'gen_image_map'
+  - 'gen_time_frequency'
+  - 'gen_distribution'
+  - 'gen_sample_distribution'
+  - 'gen_statistical_psd_analysis'
+
+hooks:
+  - ${hook.model_saver}
+  - ${hook.tracker}

@@ -1,0 +1,38 @@
+
+
+name: 'gen_diffusion'
+
+kwargs:
+  probability: 0.5
+  fraction: 2
+  model_path: ${dataset.gen_model}
+  preprocessors: ${dataset.raw_preprocessors}
+  shuffle: True
+  random_state: ${seed}
+  classes: [1]
+
+optimization_parameter: 'fraction'
+op_neutral_value: 1
+
+search:
+  strategy: 'range'
+  start: ${augmentation.gen.op_neutral_value}
+  end: 2
+  step: 0.1
+  d_type: 'float'
+
+visualisation_config:
+  name: 'Synthetic Data Generation'
+  label: 'Multiplication Factor'
+  metric: 'balanced_accuracy'
+  metric_label: 'Balanced Accuracy'
+  kwargs:
+    plot_type: 'boxplot'
+    color: 'deeppink'
+    boxplot_color: 'lavenderblush'
+    percentage: True
+    subject_display: True
+    relative_to_baseline: True
+    baseline_parameter_value: ${augmentation.gen.op_neutral_value}
+    parameter_rounding: 1
+    metric_rounding: 4

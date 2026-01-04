@@ -1,0 +1,57 @@
+name: 'eeg_net'
+pipeline_type: 'neural'
+
+args: []
+kwargs:
+  n_channels: ${dataset.n_channels}
+  n_classes: ${dataset.n_classes}
+  n_times: ${dataset.n_times}
+  sfreq: ${dataset.sfreq}
+  max_epochs: 100
+  batch_size: 128
+  drop_prob: 0.25
+  class_weights: ${dataset.class_weights}
+  experiment_mode: ${experiment.mode}
+  random_state: ${seed}
+  optimizer:
+    name: 'adam'
+    kwargs:
+      lr: 0.005
+      betas: ${as_tuple:[0, 0.999]}
+      weight_decay: 0
+  valid_split: 0.2
+  callbacks:
+    - name: 'balanced_accuracy'
+      kwargs: {}
+
+steps:
+  - name: 'custom_scaler'
+    args: [ ]
+    kwargs:
+      scalings: 'minmax'
+      feature_range: ${as_tuple:[-1, 1]}
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+
+tuning:
+  enabled: True
+  scope: 'generator'
+#  strategy: 'grid'
+  strategy: 'search'
+  n_iter: 150
+  cv: 3
+  parameters:
+    - name: 'eegclassifier__optimizer__lr'
+      strategy: 'choice'
+      value_list: [5.2e-3, 5.5e-3, 5.8e-3, 6e-3]
+    - name: 'eegclassifier__optimizer__betas'
+      strategy: 'choice'
+      value_list: ${as_tuple_list:[ [0.9, 0.999], [0.5, 0.999], [0, 0.999], [0.9, 0.9] ]}
+    - name: 'eegclassifier__module__drop_prob'
+      strategy: 'choice'
+      value_list: [ 0.25, 0.3, 0.4, 0.5 ]
+    - name: 'eegclassifier__optimizer__weight_decay'
+      strategy: 'choice'
+      value_list: [5e-4, 1e-4, 2e-4, 5e-5]

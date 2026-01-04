@@ -1,0 +1,5 @@
+
+defaults:
+  - model: ccwgan
+  - optim: adam
+  - trainer: gan

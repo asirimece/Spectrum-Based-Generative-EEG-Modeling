@@ -1,0 +1,36 @@
+name: 'fg_mdm'
+pipeline_type: 'traditional'
+
+args: []
+kwargs:
+  metric: 'riemann'
+
+steps:
+  - name: 'custom_scaler'
+    args: [ ]
+    kwargs:
+      scalings: 'minmax'
+      feature_range: ${as_tuple:[-1, 1]}
+  - name: 'noiser'
+    args: [ ]
+    kwargs:
+      sigma: 1e-8
+  - name: 'xdawn'
+    args: []
+    kwargs:
+      nfilter: 4
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+tuning:
+  enabled: False
+  scope: 'generator'
+#  scope: 'pipeline'
+#  strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters:
+    - name: 'fgmdm__metric'
+      value_list: ['riemann', 'kullback_sym']

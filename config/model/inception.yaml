@@ -1,0 +1,47 @@
+name: 'inception'
+pipeline_type: 'neural'
+
+args: []
+kwargs:
+  n_channels: ${dataset.n_channels}
+  n_classes: ${dataset.n_classes}
+  n_times: ${dataset.n_times}
+  max_epochs: 2
+  batch_size: 32
+  dropout: 0.5
+  class_weights: ${dataset.class_weights}
+  experiment_mode: ${experiment.mode}
+  random_state: ${seed}
+  valid_split: 0.2
+  callbacks:
+    - name: 'balanced_accuracy'
+      kwargs: {}
+
+steps:
+  - name: 'scaler'
+    args: []
+    kwargs: {}
+    dynamic_args: ['info']
+  - name: 'padding'
+    args: []
+    kwargs:
+      desired_channels: 299
+      desired_times: 299
+  - name: 'channels_replicator'
+    args: []
+    kwargs:
+      n_replicas: 3
+      axis: 1
+  - name: ${model.name}
+    args: ${model.args}
+    kwargs: ${model.kwargs}
+
+
+tuning:
+  enabled: False
+  scope: 'generator'
+  # strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters: {}

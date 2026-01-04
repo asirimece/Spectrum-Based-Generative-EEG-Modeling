@@ -1,0 +1,41 @@
+name: 'CCWGAN'
+
+type: 'gan'
+model_shape: ${dataset.model_shape}
+seed: ${seed}
+
+generator:
+  name: 'CCWGANGenerator'
+  z_dim: 120
+  n_classes: ${dataset.n_classes}
+  optim: ${gen.optim}
+  kwargs: 
+    out_channels: ${dataset.n_channels} 
+
+critic:
+  name: 'CCWGANCritic'
+  n_classes: ${dataset.n_classes}
+  optim: ${gen.optim}
+  iterations: 2
+  kwargs:
+    input_channels: ${dataset.n_channels} 
+    negative_slope: 0.2
+    lambda_gp: 10.0
+    stride: ${dataset.ccwgan.stride}
+    padding: ${dataset.ccwgan.padding}
+
+transforms: ${dataset.transforms}
+input_preprocessors: ${dataset.input_preprocessors}
+output_preprocessors: ${dataset.output_preprocessors}
+
+tuning:
+  enabled: True
+  scope: 'generator'
+  #strategy: 'grid'
+  strategy: 'search'
+  n_iter: 50
+  cv: 3
+  parameters:
+    - name: 'critic__iterations'
+      strategy: 'choice'
+      value_list: [ 1, 2, 3, 4, 5 ]

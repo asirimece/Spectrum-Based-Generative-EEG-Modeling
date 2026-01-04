@@ -1,0 +1,31 @@
+type: ${model.pipeline_type}
+
+raw_preprocessors: ${dataset.raw_preprocessors}
+epochs_preprocessors: ${null_safe:${experiment}, tuning_augmentation.epochs_preprocessors}
+
+model: ${model}
+
+augmentations: ${augment}
+
+steps: ${model.steps}
+
+evaluators:
+  - 'accuracy'
+  - 'balanced_accuracy'
+  - 'precision'
+  - 'recall'
+  - 'f1'
+  - 'roc_auc'
+  - 'auc'
+  - 'uar'
+  - 'war'
+
+visualizers:
+  - 'confusion_matrix'
+  - 'roc_curve'
+
+hooks:
+  - ${hook.model_saver}
+  - name: 'tracker'
+    trackers:
+      - ${tracker.experiment_tracker}

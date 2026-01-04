@@ -1,0 +1,69 @@
+
+name: 'airplane'
+
+home: './data/airplane'
+gen_dataset_type: 'torch'
+
+n_classes: 2
+n_channels: 8
+n_freq: 129
+n_times: 11
+
+subjects: [2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14]
+benchmark_subjects: [2, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14]
+
+sfreq: 128
+input_shape: ${as_tuple:[${dataset.n_channels}, ${dataset.n_freq}, ${dataset.n_times}]}
+model_shape: ${dataset.input_shape}
+
+t_min: -0.2
+t_max: 1.0
+window_size_ms: 90
+
+raw_t_min: ${null_safe:${experiment}, tuning_augmentation.raw_t_min}
+raw_t_max: ${null_safe:${experiment}, tuning_augmentation.raw_t_max}
+
+n_splits: 8
+
+class_weights: [0.55431755, 5.1025641]
+
+experiment_sub_mode: 'fractional'
+
+classes:
+  -
+    id: 0
+    name: "Non-Target"
+  -
+    id: 1
+    name: "Target"
+
+raw_preprocessors:
+  - name: 'band_pass_filter'
+    args: [ ]
+    kwargs:
+      method: 'iir'
+      low: 1
+      high: 30
+  - name: 'resample'
+    args: [ ]
+    kwargs:
+      sfreq: ${dataset.sfreq}
+
+transforms: []
+#transforms:
+  #- name: 'min_max_scaler'
+    #args: [ ]
+    #kwargs:
+      #model_shape: ${gen.model.model_shape}
+      #feature_range: ${as_tuple:[-1, 1]}
+    #dynamic_args: [ 'data' ]
+
+input_preprocessors: []
+output_preprocessors: []
+
+ccwgan:
+  stride: ${as_tuple:[1, 2]}
+  padding: ${as_tuple:[1, 0]}
+
+gen_model: 'data/models/Air_GEN_IS_DS_AS_AC_CCWGAN_NB.pth'
+verification_model: 'data/models/air_eeg_net_128.pkl'

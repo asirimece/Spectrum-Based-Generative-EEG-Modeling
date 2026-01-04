@@ -1,0 +1,29 @@
+
+name: 'Airplane-5Hz-128-GEN-EEGNet'
+
+dataset: ${dataset}
+pipeline: ${pipeline}
+
+type: 'base_train_test'
+
+mode: 'intra_subject' 
+
+sub_mode: ${dataset.experiment_sub_mode}
+
+storage_path: './work_dirs'
+
+subjects: ${dataset.benchmark_subjects}
+sessions: [0]
+
+load_balanced: false
+cv_folds: 5 
+ensemble_size: null
+ 
+tuning_augmentation: null
+augmentations: []
+
+evaluators:
+  - 'best_run_evaluator'
+
+visualizers:
+  - name: 'best_run_visualizer'

@@ -1,0 +1,13 @@
+
+# Allowed values for mode: online, offline, disabled
+mode: "disabled"
+slack: False
+
+experiment_project: vt_airplane_ccwgan
+run_project: vt_airplane_ccwgan_runs
+entity: 'asirimece'
+
+environment: "test"
+
+tags:
+  - Test
