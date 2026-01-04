@@ -32,7 +32,7 @@ This repo includes multiple generator/discriminator implementations and training
 **Option A — Conda (recommended, matches repo setup)**
 ```bash
 conda env create -f environment.yml
-conda activate vt1_eeg
+conda activate env
 ```
 **Option B – pip**
 ```bash
@@ -46,7 +46,7 @@ The main entrypoint is:
 `python src/main.py`
 
 To run the generation pipeline preset, use the provided config groups:
-`python src/main.py experiment=gen pipeline=gen dataset=airplane_ccwgan``
+`python src/main.py experiment=gen pipeline=gen dataset=airplane_ccwgan`
 
 
 #### Notes:
